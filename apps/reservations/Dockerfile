@@ -28,7 +28,7 @@ COPY package.json ./
 RUN npm install --prod
 
 COPY --from=development /usr/src/app/dist ./dist
-CMD ["node","dist/apps/reservations/main.js"]
+CMD ["node","dist/apps/reservations/main"]
 
 
 # FROM node:alpine3.13 AS development
