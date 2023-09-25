@@ -1,8 +1,30 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { UserDocument } from './users/models/user.schema';
+import { Response } from 'express';
+import { TokenPayload } from './Interfaces/tokenPayload.interface';
 
 @Injectable()
 export class AuthService {
-  getHello(): string {
-    return 'Hello World!';
+  constructor(
+    private readonly configService: ConfigService,
+    protected readonly jwtService: JwtService,
+  ) {}
+  async login(user: UserDocument, response: Response) {
+    console.log('login route hit');
+    console.log(user);
+    const tokenPayload: TokenPayload = {
+      userId: user._id.toHexString(),
+    };
+    const expires = new Date();
+    expires.setSeconds(
+      expires.getSeconds() + this.configService.get('JWT_EXPIRATION'),
+    );
+    const token = this.jwtService.sign(tokenPayload);
+    response.cookie('Authentication', token, {
+      httpOnly: true,
+      expires,
+    });
   }
 }
