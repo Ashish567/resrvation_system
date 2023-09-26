@@ -3,13 +3,14 @@ FROM node:alpine as development
 WORKDIR /usr/src/app
 
 COPY package.json ./
-# COPY pnpm-lock.yaml ./
 
-# RUN npm install -g pnpm
+COPY tscofig.json tscofig.json
 
 RUN npm install
 
-COPY . .
+COPY apps/notifications apps/notifications
+
+COPY libs libs
 
 RUN npm run build
 
@@ -21,9 +22,6 @@ ENV NODE_ENV=${NODE_ENV}
 WORKDIR /usr/src/app
 
 COPY package.json ./
-# COPY npm-lock.yaml ./
-
-# RUN npm install -g pnpm
 
 RUN npm install --prod
 
